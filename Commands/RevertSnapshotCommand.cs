@@ -13,7 +13,7 @@ namespace AzuureSnapshotManager
             return Vm.CurrentBlob?.Blob.IsSnapshot == true;
         }
 
-        public override async void ExecuteInternal(object parameter)
+        public override async Task ExecuteInternal(object parameter)
         {
             var destination = Vm.CurrentBlob.Parent.Blob;
             await BreakLeaseOn(destination);

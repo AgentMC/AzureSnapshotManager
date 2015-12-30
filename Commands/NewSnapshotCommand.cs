@@ -2,6 +2,7 @@
 using AzuureSnapshotManager.Global;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
+using System.Threading.Tasks;
 
 namespace AzuureSnapshotManager
 {
@@ -14,7 +15,7 @@ namespace AzuureSnapshotManager
             return Vm.CurrentBlob?.Blob.IsSnapshot == false;
         }
 
-        public override async void ExecuteInternal(object parameter)
+        public override async Task ExecuteInternal(object parameter)
         {
             var b = Vm.CurrentBlob.Blob as CloudBlob;
             if (b != null)

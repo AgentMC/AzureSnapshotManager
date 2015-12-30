@@ -23,8 +23,12 @@ namespace AzuureSnapshotManager
         {
             try
             {
-                ExecuteInternal(parameter);
+                ExecuteInternal(parameter).Wait();
                 Vm.OnCommandSucceeded();
+            }
+            catch (AggregateException ae)
+            {
+                Vm.OnError(ae.InnerException);
             }
             catch (Exception ex)
             {
@@ -32,7 +36,7 @@ namespace AzuureSnapshotManager
             }
         }
 
-        public abstract void ExecuteInternal(object parameter);
+        public abstract Task ExecuteInternal(object parameter);
 
         protected async Task BreakLeaseOn(ICloudBlob destination)
         {
@@ -46,6 +50,11 @@ namespace AzuureSnapshotManager
                     throw new Exception("Couldn't break lease on blob.");
                 }
             }
+        }
+
+        protected Task Nop()
+        {
+            return Task.Run(delegate { });
         }
     }
 }

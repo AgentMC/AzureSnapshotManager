@@ -14,7 +14,7 @@ namespace AzuureSnapshotManager.Commands
             return Vm.CurrentBlob?.Blob.IsSnapshot == true;
         }
 
-        public override async void ExecuteInternal(object parameter)
+        public override async Task ExecuteInternal(object parameter)
         {
             var nameAndDetails = new Credentials("Snapshot name", "Snapshot description", "Edit snapshot details", Vm.CurrentBlob.SnapshotTitle, Vm.CurrentBlob.SnapshotDescription);
             if (nameAndDetails.ShowDialog() == true)

@@ -1,4 +1,6 @@
-﻿namespace AzuureSnapshotManager
+﻿using System.Threading.Tasks;
+
+namespace AzuureSnapshotManager
 {
     class RemoveSnapshotCommand : MainVmCommandBase
     {
@@ -9,10 +11,11 @@
             return Vm.CurrentBlob?.Blob.IsSnapshot == true;
         }
 
-        public override void ExecuteInternal(object parameter)
+        public override Task ExecuteInternal(object parameter)
         {
             Vm.CurrentBlob.Blob.Delete();
             Vm.ReloadContainer();
+            return Nop();
         }
     }
 }
