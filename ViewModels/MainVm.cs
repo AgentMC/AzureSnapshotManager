@@ -22,7 +22,7 @@ namespace AzuureSnapshotManager
             _setMetadataCommand = new SetMetadataCommand(this);
         }
 
-        public void Login (string storageName, string key)
+        public void Login(string storageName, string key)
         {
             var x = new StorageCredentials(storageName, key);
             var y = new Microsoft.WindowsAzure.Storage.CloudStorageAccount(x, false);
@@ -30,7 +30,7 @@ namespace AzuureSnapshotManager
             Blobs.Clear();
             y.CreateCloudBlobClient().ListContainers().ToList().ForEach(Containers.Add);
         }
-                
+
         public ObservableCollection<CloudBlobContainer> Containers { get; set; }
 
         private CloudBlobContainer _currentContainer;
@@ -49,10 +49,14 @@ namespace AzuureSnapshotManager
 
         public void ReloadContainer()
         {
+            if (_currentContainer == null) return;
             Blobs.Clear();
             _currentContainer.ListBlobs(useFlatBlobListing: true, blobListingDetails: BlobListingDetails.All)
                                 .Where(t => t is ICloudBlob)
                                 .Cast<ICloudBlob>()
+                                .Where(b => b.BlobType == BlobType.AppendBlob && ShowAppendBlobs ||
+                                            b.BlobType == BlobType.BlockBlob && ShowBlockBlobs ||
+                                            b.BlobType == BlobType.PageBlob && ShowPageBlobs)
                                 .GroupBy(b => b.Name)
                                 .OrderBy(g => g.Key)
                                 .Select(items => new BlobVm(items))
@@ -72,7 +76,7 @@ namespace AzuureSnapshotManager
             }
             set
             {
-                if(_currentBlob != value)
+                if (_currentBlob != value)
                 {
                     _currentBlob = value;
                     if (CurrentBlobChanged != null) CurrentBlobChanged(this, null);
@@ -114,6 +118,53 @@ namespace AzuureSnapshotManager
         public void OnCommandSucceeded()
         {
             if (CommandSucceeded != null) CommandSucceeded(this, null);
+        }
+
+        private bool _showPageBlobs = true, _showAppendBlobs = true, _showBlockBlobs = true;
+        public bool ShowPageBlobs
+        {
+            get
+            {
+                return _showPageBlobs;
+            }
+            set
+            {
+                if (value != _showPageBlobs)
+                {
+                    _showPageBlobs = value;
+                    ReloadContainer();
+                }
+            }
+        }
+        public bool ShowAppendBlobs
+        {
+            get
+            {
+                return _showAppendBlobs;
+            }
+            set
+            {
+                if (value != _showAppendBlobs)
+                {
+                    _showAppendBlobs = value;
+                    ReloadContainer();
+                }
+            }
+        }
+        public bool ShowBlockBlobs
+        {
+            get
+            {
+                return _showBlockBlobs;
+            }
+            set
+            {
+                if (value != _showBlockBlobs)
+                {
+                    _showBlockBlobs = value;
+                    ReloadContainer();
+                }
+            }
         }
     }
 }
