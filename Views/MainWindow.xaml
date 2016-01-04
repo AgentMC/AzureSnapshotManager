@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AzuureSnapshotManager"
         mc:Ignorable="d"
-        Title="Azure snapshot manager" Height="350" Width="525"
+        Title="Azure snapshot manager" Height="480" Width="640"
         DataContext="{StaticResource mainvm}">
     <Window.Resources>
         <Style TargetType="Button">
@@ -28,7 +28,7 @@
         <ComboBox Name="Containers" ItemsSource="{Binding Containers}" SelectedItem="{Binding CurrentContainer, Mode=TwoWay}" Grid.ColumnSpan="2">
             <ComboBox.ItemTemplate>
                 <DataTemplate DataType="CloudBlobContainer">
-                    <Label Content="{Binding Name}"/>
+                    <TextBlock Text="{Binding Name}" HorizontalAlignment="Stretch"/>
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
@@ -36,20 +36,25 @@
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                     <Grid>
+                        <Grid.Resources>
+                            <Style TargetType="TextBlock">
+                                <Setter Property="Padding" Value="6,3"/>
+                            </Style>
+                        </Grid.Resources>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition SharedSizeGroup="ActiveMarkOnSnapshot"/>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                             <ColumnDefinition/>
                        </Grid.ColumnDefinitions>
-                        <Label Content="{Binding ActiveMark}"/>
-                        <Label Grid.Column="1"  Content="{Binding Blob.Name}"/>
-                        <Label Grid.Column="2" Content="{Binding SnapshotDate}"/>
-                        <Label Grid.Column="3" Content="{Binding SnapshotTitle}">
-                            <Label.ToolTip>
-                                <TextBlock Text="{Binding SnapshotDescription}"/>
-                            </Label.ToolTip>
-                        </Label>
+                        <TextBlock Text="{Binding ActiveMark}"/>
+                        <TextBlock Grid.Column="1" Text="{Binding Blob.Name}"/>
+                        <TextBlock Grid.Column="2" Text="{Binding SnapshotDate}"/>
+                        <TextBlock Grid.Column="3" Text="{Binding SnapshotTitle}" ToolTipService.IsEnabled="{Binding HasDescription}">
+                            <TextBlock.ToolTip>
+                                <TextBlock Text="{Binding SnapshotDescription}" Style="{x:Null}"/>
+                            </TextBlock.ToolTip>
+                        </TextBlock>
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

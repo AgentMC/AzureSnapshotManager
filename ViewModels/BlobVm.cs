@@ -73,5 +73,9 @@ namespace AzuureSnapshotManager
         {
             get { return GetBlobMetadata(Constants.KeySnapshotDesc); }
         }
+        public bool HasDescription
+        {
+            get { return !string.IsNullOrWhiteSpace(SnapshotDescription); }
+        }
     }
 }
