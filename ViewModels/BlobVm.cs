@@ -58,7 +58,7 @@ namespace AzuureSnapshotManager
                 Parent.Blob == null || 
                 !Parent.Blob.Metadata.TryGetValue(key + Blob.GetTimeStampHash(), out data))
                 return null;
-            return data;
+            return Uri.UnescapeDataString(data);
         }
 
         public string SnapshotTitle

@@ -1,6 +1,7 @@
 ﻿using AzuureSnapshotManager.Global;
 using AzuureSnapshotManager.Views;
 using Microsoft.WindowsAzure.Storage.Blob;
+using System;
 using System.Threading.Tasks;
 
 namespace AzuureSnapshotManager.Commands
@@ -36,7 +37,7 @@ namespace AzuureSnapshotManager.Commands
         {
             if (!string.IsNullOrWhiteSpace(value))
             {
-                blob.Metadata[key] = value;
+                blob.Metadata[key] = Uri.EscapeDataString(value);
             }
             else if (blob.Metadata.ContainsKey(key))
             {
