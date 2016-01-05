@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage.Blob;
+using System;
 
 namespace AzuureSnapshotManager.Global
 {
@@ -6,11 +7,15 @@ namespace AzuureSnapshotManager.Global
     {
         public static string GetTimeStampHash(this ICloudBlob snapshotBlob)
         {
-            return snapshotBlob.SnapshotTime.Value.UtcTicks.ToString("D");
+            return GetTimeStampHash(snapshotBlob.SnapshotTime.Value);
         }
         public static string GetTimeStampHash(this CloudBlob snapshotBlob)
         {
-            return snapshotBlob.SnapshotTime.Value.UtcTicks.ToString("D");
+            return GetTimeStampHash(snapshotBlob.SnapshotTime.Value);
+        }
+        private static string GetTimeStampHash(DateTimeOffset dt)
+        {
+            return dt.UtcTicks.ToString("D");
         }
     }
 }

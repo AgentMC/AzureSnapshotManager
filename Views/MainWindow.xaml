@@ -68,7 +68,7 @@
             <Button Command="{Binding LoginCommand}">Login</Button>
             <Button Command="{Binding NewSnapshotCommand}">New snapshot</Button>
             <Button Command="{Binding RevertSnapshotCommand}">Revert to this snapshot</Button>
-            <Button Command="{Binding RemoveSnapshotCommand}">Remove snapshot</Button>
+            <Button Command="{Binding RemoveSnapshotCommand}">Delete snapshot</Button>
             <Button Command="{Binding SetMetadataCommand}">Edit snapshot</Button>
             <Label Foreground="Green" FontWeight="Bold" Visibility="Hidden" Name="SuccessIndicator">Succeeded!</Label>
         </StackPanel>

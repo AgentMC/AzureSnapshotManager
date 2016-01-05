@@ -24,11 +24,11 @@ namespace AzuureSnapshotManager
 
         public void Login(string storageName, string key)
         {
-            var x = new StorageCredentials(storageName, key);
-            var y = new Microsoft.WindowsAzure.Storage.CloudStorageAccount(x, false);
+            var credentials = new StorageCredentials(storageName, key);
+            var account = new Microsoft.WindowsAzure.Storage.CloudStorageAccount(credentials, false);
             Containers.Clear();
             Blobs.Clear();
-            y.CreateCloudBlobClient().ListContainers().ToList().ForEach(Containers.Add);
+            account.CreateCloudBlobClient().ListContainers().ToList().ForEach(Containers.Add);
         }
 
         public ObservableCollection<CloudBlobContainer> Containers { get; set; }
