@@ -9,26 +9,26 @@ namespace AzuureSnapshotManager.Global
         private static Preferences _singletone;
         public static Preferences Instance { get { return _singletone ?? (_singletone = new Preferences()); } }
 
-        private readonly string Path;
+        private readonly string PrefsPath;
         private Preferences()
         {
-            Path = Environment.ExpandEnvironmentVariables("%appdata%\\AzureSnapshotManager\\prefs.xml");
+            PrefsPath = Path.Combine(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "AzureSnapshotManager"), "prefs.xml");
             _checkboxes = BlobFilter.Page;
-            if (File.Exists(Path))
+            if (File.Exists(PrefsPath))
             {
-                var xd = XDocument.Load(Path);
+                var xd = XDocument.Load(PrefsPath);
                 var root = xd.Root;
                 XElement element;
-                if ((element = root.Element(nameof(LoginName))) != null) LoginName = element.Value;
-                if ((element = root.Element(nameof(AuthKey))) != null) AuthKey = element.Value;
-                if ((element = root.Element(nameof(LastUsedContainer))) != null) LastUsedContainer = element.Value;
-                if ((element = root.Element(nameof(Checkboxes))) != null) Checkboxes = (BlobFilter)int.Parse(element.Value);
+                if ((element = root.Element(nameof(LoginName))) != null) _loginName = element.Value;
+                if ((element = root.Element(nameof(AuthKey))) != null) _authKey = element.Value;
+                if ((element = root.Element(nameof(LastUsedContainer))) != null) _lastUsedContainer = element.Value;
+                if ((element = root.Element(nameof(Checkboxes))) != null) _checkboxes = (BlobFilter)int.Parse(element.Value);
             }
         }
 
         private void Save()
         {
-            var folder = System.IO.Path.GetDirectoryName(Path);
+            var folder = Path.GetDirectoryName(PrefsPath);
             if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
             var xd = new XDocument(
                 new XElement("Settings",
@@ -36,7 +36,7 @@ namespace AzuureSnapshotManager.Global
                     new XElement(nameof(AuthKey), AuthKey),
                     new XElement(nameof(LastUsedContainer), LastUsedContainer),
                     new XElement(nameof(Checkboxes), (int)Checkboxes)));
-            xd.Save(Path);
+            xd.Save(PrefsPath);
         }
 
         private string _loginName, _authKey, _lastUsedContainer;
