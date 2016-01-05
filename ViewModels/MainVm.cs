@@ -1,14 +1,17 @@
 ﻿using AzuureSnapshotManager.Commands;
+using AzuureSnapshotManager.Global;
 using Microsoft.WindowsAzure.Storage.Auth;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows.Input;
 
 namespace AzuureSnapshotManager.ViewModels
 {
-    public class MainVm
+    public class MainVm: INotifyPropertyChanged
     {
         private readonly ICommand _loginCommand, _newSnapshotCommand, _revertSnapshotCommand, _removeSnapshotCommand, _setMetadataCommand;
         public MainVm()
@@ -20,6 +23,10 @@ namespace AzuureSnapshotManager.ViewModels
             _removeSnapshotCommand = new RemoveSnapshotCommand(this);
             _revertSnapshotCommand = new RevertSnapshotCommand(this);
             _setMetadataCommand = new SetMetadataCommand(this);
+            //----
+            _showAppendBlobs = (Preferences.Instance.Checkboxes & Preferences.BlobFilter.Append) > 0;
+            _showBlockBlobs = (Preferences.Instance.Checkboxes & Preferences.BlobFilter.Block) > 0;
+            _showPageBlobs = (Preferences.Instance.Checkboxes & Preferences.BlobFilter.Page) > 0;
         }
 
         public void Login(string storageName, string key)
@@ -29,6 +36,12 @@ namespace AzuureSnapshotManager.ViewModels
             Containers.Clear();
             Blobs.Clear();
             account.CreateCloudBlobClient().ListContainers().ToList().ForEach(Containers.Add);
+            var lastUsed = Preferences.Instance.LastUsedContainer;
+            CloudBlobContainer container;
+            if(lastUsed != null && (container = Containers.FirstOrDefault(c=>c.Name == lastUsed)) != null)
+            {
+                CurrentContainer = container;
+            }
         }
 
         public ObservableCollection<CloudBlobContainer> Containers { get; set; }
@@ -43,6 +56,8 @@ namespace AzuureSnapshotManager.ViewModels
             set
             {
                 _currentContainer = value;
+                if (_currentContainer != null) Preferences.Instance.LastUsedContainer = _currentContainer.Name;
+                OnPropertyChanged();
                 ReloadContainer();
             }
         }
@@ -115,9 +130,16 @@ namespace AzuureSnapshotManager.ViewModels
         }
 
         public event EventHandler CommandSucceeded;
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public void OnCommandSucceeded()
         {
             if (CommandSucceeded != null) CommandSucceeded(this, null);
+        }
+
+        private void OnPropertyChanged([CallerMemberName]string propertyName = null)
+        {
+            if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
 
         private bool _showPageBlobs = true, _showAppendBlobs = false, _showBlockBlobs = false;
@@ -132,6 +154,7 @@ namespace AzuureSnapshotManager.ViewModels
                 if (value != _showPageBlobs)
                 {
                     _showPageBlobs = value;
+                    Preferences.Instance.Checkboxes ^= Preferences.BlobFilter.Page;
                     ReloadContainer();
                 }
             }
@@ -147,6 +170,7 @@ namespace AzuureSnapshotManager.ViewModels
                 if (value != _showAppendBlobs)
                 {
                     _showAppendBlobs = value;
+                    Preferences.Instance.Checkboxes ^= Preferences.BlobFilter.Append;
                     ReloadContainer();
                 }
             }
@@ -162,6 +186,7 @@ namespace AzuureSnapshotManager.ViewModels
                 if (value != _showBlockBlobs)
                 {
                     _showBlockBlobs = value;
+                    Preferences.Instance.Checkboxes ^= Preferences.BlobFilter.Block;
                     ReloadContainer();
                 }
             }

@@ -1,4 +1,5 @@
-﻿using AzuureSnapshotManager.ViewModels;
+﻿using AzuureSnapshotManager.Global;
+using AzuureSnapshotManager.ViewModels;
 using System.Threading.Tasks;
 
 namespace AzuureSnapshotManager.Commands
@@ -14,10 +15,16 @@ namespace AzuureSnapshotManager.Commands
 
         public override Task ExecuteInternal(object parameter)
         {
-            var cred = new Views.Credentials("Storage account name:", "Storage account key:", "Connect to Storage account");
+            var cred = new Views.Credentials("Storage account name:",
+                                             "Storage account key:",
+                                             "Connect to Storage account",
+                                             Preferences.Instance.LoginName,
+                                             Preferences.Instance.AuthKey);
             if (cred.ShowDialog() == true)
             {
                 Vm.Login(cred.ShortField.Text, cred.LongField.Text);
+                Preferences.Instance.LoginName = cred.ShortField.Text;
+                Preferences.Instance.AuthKey = cred.LongField.Text;
             }
             return Nop();
         }

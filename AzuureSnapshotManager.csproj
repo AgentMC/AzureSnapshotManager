@@ -102,6 +102,7 @@
     <Compile Include="Commands\SetMetadataCommand.cs" />
     <Compile Include="Global\Constants.cs" />
     <Compile Include="Global\Extensions.cs" />
+    <Compile Include="Global\Preferences.cs" />
     <Compile Include="Views\Credentials.xaml.cs">
       <DependentUpon>Credentials.xaml</DependentUpon>
     </Compile>
