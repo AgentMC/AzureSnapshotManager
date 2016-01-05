@@ -1,10 +1,10 @@
-﻿using AzuureSnapshotManager.Commands;
-using AzuureSnapshotManager.Global;
+﻿using AzuureSnapshotManager.Global;
+using AzuureSnapshotManager.ViewModels;
 using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Threading.Tasks;
 
-namespace AzuureSnapshotManager
+namespace AzuureSnapshotManager.Commands
 {
     class NewSnapshotCommand : MainVmCommandBase
     {

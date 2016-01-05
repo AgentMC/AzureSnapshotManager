@@ -1,9 +1,10 @@
-﻿using Microsoft.WindowsAzure.Storage.Blob;
+﻿using AzuureSnapshotManager.ViewModels;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace AzuureSnapshotManager
+namespace AzuureSnapshotManager.Commands
 {
     abstract class MainVmCommandBase : ICommand
     {

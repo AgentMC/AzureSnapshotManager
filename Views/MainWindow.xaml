@@ -1,4 +1,4 @@
-﻿<Window x:Class="AzuureSnapshotManager.MainWindow"
+﻿<Window x:Class="AzuureSnapshotManager.Views.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,7 +6,8 @@
         xmlns:local="clr-namespace:AzuureSnapshotManager"
         mc:Ignorable="d"
         Title="Azure snapshot manager" Height="480" Width="640"
-        DataContext="{StaticResource mainvm}">
+        DataContext="{StaticResource mainvm}"
+        WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <Style TargetType="Button">
             <Setter Property="Margin" Value="3"/>

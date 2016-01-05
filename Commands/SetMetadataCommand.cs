@@ -1,4 +1,5 @@
 ﻿using AzuureSnapshotManager.Global;
+using AzuureSnapshotManager.ViewModels;
 using AzuureSnapshotManager.Views;
 using System.Threading.Tasks;
 

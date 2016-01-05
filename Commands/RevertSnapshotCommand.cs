@@ -2,8 +2,9 @@
 using AzuureSnapshotManager.Global;
 using System;
 using System.Threading.Tasks;
+using AzuureSnapshotManager.ViewModels;
 
-namespace AzuureSnapshotManager
+namespace AzuureSnapshotManager.Commands
 {
     class RevertSnapshotCommand : MainVmCommandBase
     {

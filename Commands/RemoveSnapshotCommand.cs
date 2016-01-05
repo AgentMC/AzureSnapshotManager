@@ -1,6 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using AzuureSnapshotManager.ViewModels;
+using System.Threading.Tasks;
 
-namespace AzuureSnapshotManager
+namespace AzuureSnapshotManager.Commands
 {
     class RemoveSnapshotCommand : MainVmCommandBase
     {

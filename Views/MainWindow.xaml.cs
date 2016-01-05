@@ -1,7 +1,8 @@
-﻿using System.Threading.Tasks;
+﻿using AzuureSnapshotManager.ViewModels;
+using System.Threading.Tasks;
 using System.Windows;
 
-namespace AzuureSnapshotManager
+namespace AzuureSnapshotManager.Views
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
