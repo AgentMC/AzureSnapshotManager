@@ -1,4 +1,5 @@
 ﻿using Microsoft.WindowsAzure.Storage.Blob;
+using AzuureSnapshotManager.Global;
 using System;
 using System.Threading.Tasks;
 
@@ -15,13 +16,19 @@ namespace AzuureSnapshotManager
 
         public override async Task ExecuteInternal(object parameter)
         {
-            var destination = Vm.CurrentBlob.Parent.Blob;
+            var parentVm = Vm.CurrentBlob.Parent;
+            var destination = parentVm.Blob;
+            var source = Vm.CurrentBlob.Blob;
+
             await BreakLeaseOn(destination);
             //Since we're copying between snapshot and it's parent it'll actually run synchronously
-            var copyId = destination.StartCopyFromBlob(Vm.CurrentBlob.Blob.SnapshotQualifiedUri);
+            var copyId = destination.StartCopyFromBlob(source.SnapshotQualifiedUri);
             destination.FetchAttributes();
             if (destination.CopyState.CopyId != copyId) throw new Exception("Something went wrong. Copy state refers to wrong CopyId");
             if (destination.CopyState.Status != CopyStatus.Success) throw new Exception("Something went wrong. Copy status " + destination.CopyState.Status);
+
+            parentVm.SetActiveSnapshot(source.GetTimeStampHash());
+
             Vm.ReloadContainer();
         }
     }

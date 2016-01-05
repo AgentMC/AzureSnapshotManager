@@ -77,6 +77,11 @@ namespace AzuureSnapshotManager
 
         //--------
 
+        public void SetActiveSnapshot(string snapshotTimeStampHash)
+        {
+            SetMetadata(new[] { new KeyValuePair<string, string>(Constants.KeySnapshotCurr, snapshotTimeStampHash) });
+        }
+
         public void SetSnapshotMetadata(string snapshotTimeStampHash, string snapshotName, string snapshotDescription)
         {
             SetMetadata(new Dictionary<string, string>
