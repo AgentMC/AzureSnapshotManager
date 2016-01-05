@@ -120,7 +120,7 @@ namespace AzuureSnapshotManager
             if (CommandSucceeded != null) CommandSucceeded(this, null);
         }
 
-        private bool _showPageBlobs = true, _showAppendBlobs = true, _showBlockBlobs = true;
+        private bool _showPageBlobs = true, _showAppendBlobs = false, _showBlockBlobs = false;
         public bool ShowPageBlobs
         {
             get

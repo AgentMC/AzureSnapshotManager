@@ -1,7 +1,5 @@
 ﻿using AzuureSnapshotManager.Global;
 using AzuureSnapshotManager.Views;
-using Microsoft.WindowsAzure.Storage.Blob;
-using System;
 using System.Threading.Tasks;
 
 namespace AzuureSnapshotManager.Commands
@@ -20,29 +18,15 @@ namespace AzuureSnapshotManager.Commands
             var nameAndDetails = new Credentials("Snapshot name", "Snapshot description", "Edit snapshot details", Vm.CurrentBlob.SnapshotTitle, Vm.CurrentBlob.SnapshotDescription);
             if (nameAndDetails.ShowDialog() == true)
             {
-                await SetMetadataCore(Vm.CurrentBlob.Blob.GetTimeStampHash(), Vm.CurrentBlob.Parent.Blob, nameAndDetails);
+                await SetSnapshotDetails(Vm.CurrentBlob.Blob.GetTimeStampHash(), Vm.CurrentBlob.Parent, nameAndDetails);
             }
         }
 
-        public async Task SetMetadataCore(string snapshotTimeStampHash, ICloudBlob parentBlob, Credentials credentials)
+        public async Task SetSnapshotDetails(string snapshotBlobTimeStampHash, BlobVm parentBlob, Credentials credentials)
         {
-            await BreakLeaseOn(parentBlob);
-            SetMetadataKey(parentBlob, Constants.KeySnapshotName + snapshotTimeStampHash, credentials.ShortField.Text);
-            SetMetadataKey(parentBlob, Constants.KeySnapshotDesc + snapshotTimeStampHash, credentials.LongField.Text);
-            parentBlob.SetMetadata();
+            await BreakLeaseOn(parentBlob.Blob);
+            parentBlob.SetSnapshotMetadata(snapshotBlobTimeStampHash, credentials.ShortField.Text, credentials.LongField.Text);
             Vm.ReloadContainer();
-        }
-
-        private void SetMetadataKey(ICloudBlob blob, string key, string value)
-        {
-            if (!string.IsNullOrWhiteSpace(value))
-            {
-                blob.Metadata[key] = Uri.EscapeDataString(value);
-            }
-            else if (blob.Metadata.ContainsKey(key))
-            {
-                blob.Metadata.Remove(key);
-            }
         }
     }
 }

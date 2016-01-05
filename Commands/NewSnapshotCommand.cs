@@ -24,7 +24,7 @@ namespace AzuureSnapshotManager
                 if(nameAndDetails.ShowDialog() == true)
                 {
                     var snap = b.Snapshot();
-                    await ((SetMetadataCommand)Vm.SetMetadataCommand).SetMetadataCore(snap.GetTimeStampHash(), Vm.CurrentBlob.Blob, nameAndDetails);
+                    await ((SetMetadataCommand)Vm.SetMetadataCommand).SetSnapshotDetails(snap.GetTimeStampHash(), Vm.CurrentBlob, nameAndDetails);
                 }
             }
             else

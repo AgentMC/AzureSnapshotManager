@@ -50,20 +50,49 @@ namespace AzuureSnapshotManager
         public string ActiveMark { get; set; }
         public ICloudBlob Blob { get; set; }
 
-        private string GetBlobMetadata(string key)
+        //--------
+
+        public string GetMetadata(string key)
         {
             string data;
-            if (Blob == null || 
-                Parent == null || 
-                Parent.Blob == null || 
-                !Parent.Blob.Metadata.TryGetValue(key + Blob.GetTimeStampHash(), out data))
-                return null;
+            if (Blob == null || !Blob.Metadata.TryGetValue(key, out data)) return null;
             return Uri.UnescapeDataString(data);
         }
+        public void SetMetadata(IEnumerable<KeyValuePair<string, string>> metas)
+        {
+            if (Blob == null) throw new InvalidOperationException("The underlying blob is not initialized");
+            foreach (var pair in metas)
+            {
+                if (!string.IsNullOrWhiteSpace(pair.Value))
+                {
+                    Blob.Metadata[pair.Key] = Uri.EscapeDataString(pair.Value);
+                }
+                else if (Blob.Metadata.ContainsKey(pair.Key))
+                {
+                    Blob.Metadata.Remove(pair.Key);
+                }
+            }
+            Blob.SetMetadata();
+        }
 
+        //--------
+
+        public void SetSnapshotMetadata(string snapshotTimeStampHash, string snapshotName, string snapshotDescription)
+        {
+            SetMetadata(new Dictionary<string, string>
+            {
+                { Constants.KeySnapshotName + snapshotTimeStampHash, snapshotName},
+                { Constants.KeySnapshotDesc + snapshotTimeStampHash, snapshotDescription}
+            });
+        }
+        private string GetSnapshotMetadata(string snapshotProprtyName)
+        {
+            if (Blob == null || Parent == null) return null;
+            return Parent.GetMetadata(snapshotProprtyName + Blob.GetTimeStampHash());
+        }
         public string SnapshotTitle
         {
-            get { return GetBlobMetadata(Constants.KeySnapshotName); }
+            get { return GetSnapshotMetadata(Constants.KeySnapshotName); }
         }
         public string SnapshotDate
         {
@@ -71,7 +100,7 @@ namespace AzuureSnapshotManager
         }
         public string SnapshotDescription
         {
-            get { return GetBlobMetadata(Constants.KeySnapshotDesc); }
+            get { return GetSnapshotMetadata(Constants.KeySnapshotDesc); }
         }
         public bool HasDescription
         {
