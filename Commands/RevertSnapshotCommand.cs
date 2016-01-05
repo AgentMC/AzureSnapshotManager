@@ -15,7 +15,7 @@ namespace AzuureSnapshotManager.Commands
             return Vm.CurrentBlob?.Blob.IsSnapshot == true;
         }
 
-        public override async Task ExecuteInternal(object parameter)
+        public override async Task<bool> ExecuteInternal(object parameter)
         {
             var parentVm = Vm.CurrentBlob.Parent;
             var destination = parentVm.Blob;
@@ -31,6 +31,7 @@ namespace AzuureSnapshotManager.Commands
             parentVm.SetActiveSnapshot(source.GetTimeStampHash());
 
             Vm.ReloadContainer();
+            return true;
         }
     }
 }

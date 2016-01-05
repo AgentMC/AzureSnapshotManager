@@ -12,11 +12,11 @@ namespace AzuureSnapshotManager.Commands
             return Vm.CurrentBlob?.Blob.IsSnapshot == true;
         }
 
-        public override Task ExecuteInternal(object parameter)
+        public override Task<bool> ExecuteInternal(object parameter)
         {
             Vm.CurrentBlob.Blob.Delete();
             Vm.ReloadContainer();
-            return Nop();
+            return True;
         }
     }
 }

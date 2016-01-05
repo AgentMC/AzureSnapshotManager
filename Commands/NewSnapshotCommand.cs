@@ -15,7 +15,7 @@ namespace AzuureSnapshotManager.Commands
             return Vm.CurrentBlob?.Blob.IsSnapshot == false;
         }
 
-        public override async Task ExecuteInternal(object parameter)
+        public override async Task<bool> ExecuteInternal(object parameter)
         {
             var b = Vm.CurrentBlob.Blob as CloudBlob;
             if (b != null)
@@ -28,7 +28,9 @@ namespace AzuureSnapshotManager.Commands
                     await ((SetMetadataCommand)Vm.SetMetadataCommand).SetSnapshotDetails(snapHash, Vm.CurrentBlob, nameAndDetails);
                     Vm.CurrentBlob.SetActiveSnapshot(snapHash);
                     Vm.ReloadContainer();
+                    return true;
                 }
+                return false;
             }
             else
             {

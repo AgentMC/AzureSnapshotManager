@@ -13,7 +13,7 @@ namespace AzuureSnapshotManager.Commands
             return true;
         }
 
-        public override Task ExecuteInternal(object parameter)
+        public override Task<bool> ExecuteInternal(object parameter)
         {
             var cred = new Views.Credentials("Storage account name:",
                                              "Storage account key:",
@@ -25,8 +25,9 @@ namespace AzuureSnapshotManager.Commands
                 Vm.Login(cred.ShortField.Text, cred.LongField.Text);
                 Preferences.Instance.LoginName = cred.ShortField.Text;
                 Preferences.Instance.AuthKey = cred.LongField.Text;
+                return True;
             }
-            return Nop();
+            return False;
         }
     }
 }

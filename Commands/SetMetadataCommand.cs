@@ -14,14 +14,16 @@ namespace AzuureSnapshotManager.Commands
             return Vm.CurrentBlob?.Blob.IsSnapshot == true;
         }
 
-        public override async Task ExecuteInternal(object parameter)
+        public override async Task<bool> ExecuteInternal(object parameter)
         {
             var nameAndDetails = new Credentials("Snapshot name", "Snapshot description", "Edit snapshot details", Vm.CurrentBlob.SnapshotTitle, Vm.CurrentBlob.SnapshotDescription);
             if (nameAndDetails.ShowDialog() == true)
             {
                 await SetSnapshotDetails(Vm.CurrentBlob.Blob.GetTimeStampHash(), Vm.CurrentBlob.Parent, nameAndDetails);
                 Vm.ReloadContainer();
+                return true;
             }
+            return false;
         }
 
         public async Task SetSnapshotDetails(string snapshotBlobTimeStampHash, BlobVm parentBlob, Credentials credentials)

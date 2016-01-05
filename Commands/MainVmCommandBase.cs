@@ -24,8 +24,7 @@ namespace AzuureSnapshotManager.Commands
         {
             try
             {
-                ExecuteInternal(parameter).Wait();
-                Vm.OnCommandSucceeded();
+                if (ExecuteInternal(parameter).Result) Vm.OnCommandSucceeded();
             }
             catch (AggregateException ae)
             {
@@ -37,7 +36,7 @@ namespace AzuureSnapshotManager.Commands
             }
         }
 
-        public abstract Task ExecuteInternal(object parameter);
+        public abstract Task<bool> ExecuteInternal(object parameter);
 
         protected async Task BreakLeaseOn(ICloudBlob destination)
         {
@@ -53,9 +52,13 @@ namespace AzuureSnapshotManager.Commands
             }
         }
 
-        protected Task Nop()
+        protected Task<bool> True
         {
-            return Task.Run(delegate { });
+            get { return Task.Run(() => true); }
+        }
+        protected Task<bool> False
+        {
+            get { return Task.Run(() => false); }
         }
     }
 }
