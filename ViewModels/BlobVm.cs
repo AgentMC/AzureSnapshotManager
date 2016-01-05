@@ -10,6 +10,7 @@ namespace AzuureSnapshotManager
     {
         public BlobVm(IEnumerable<ICloudBlob> items)
         {
+            //Step 1: sorting and tree-ing
             Children = new ObservableCollection<BlobVm>();
             foreach(var item in items)
             {
@@ -26,8 +27,25 @@ namespace AzuureSnapshotManager
                     throw new Exception("More than one non-snapshot blob exists in group.");
                 }
             }
+
+            //Step 2: finding the actual snapshot
             ActiveMark = "[>]";
-            if(Blob.CopyState != null)
+            var activeSnapshotHash = GetMetadata(Constants.KeySnapshotCurr);
+            //round 1: try to identify active snapshot based on active snapshot mark
+            if(activeSnapshotHash != null)
+            {
+                foreach (var child in Children)
+                {
+                    if (child.Blob.GetTimeStampHash() == activeSnapshotHash)
+                    {
+                        child.ActiveMark = ActiveMark;
+                        ActiveMark = null;
+                        break;
+                    }
+                }
+            }
+            //round 2 - in case round 1 failed. Fallback to naїve way - based on last rollback done.
+            if (Blob.CopyState != null && ActiveMark != null)
             {
                 foreach (var child in Children)
                 {
@@ -40,6 +58,7 @@ namespace AzuureSnapshotManager
                 }
             }
         }
+
         private BlobVm (ICloudBlob blob, BlobVm parent)
         {
             Blob = blob;

@@ -19,6 +19,7 @@ namespace AzuureSnapshotManager.Commands
             if (nameAndDetails.ShowDialog() == true)
             {
                 await SetSnapshotDetails(Vm.CurrentBlob.Blob.GetTimeStampHash(), Vm.CurrentBlob.Parent, nameAndDetails);
+                Vm.ReloadContainer();
             }
         }
 
@@ -26,7 +27,6 @@ namespace AzuureSnapshotManager.Commands
         {
             await BreakLeaseOn(parentBlob.Blob);
             parentBlob.SetSnapshotMetadata(snapshotBlobTimeStampHash, credentials.ShortField.Text, credentials.LongField.Text);
-            Vm.ReloadContainer();
         }
     }
 }

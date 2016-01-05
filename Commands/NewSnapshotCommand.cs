@@ -27,6 +27,7 @@ namespace AzuureSnapshotManager
                     var snapHash = snap.GetTimeStampHash();
                     await ((SetMetadataCommand)Vm.SetMetadataCommand).SetSnapshotDetails(snapHash, Vm.CurrentBlob, nameAndDetails);
                     Vm.CurrentBlob.SetActiveSnapshot(snapHash);
+                    Vm.ReloadContainer();
                 }
             }
             else
